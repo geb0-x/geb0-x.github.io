@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geb0_X — RE & Security blog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #21252b;
+    --border:    #353a44;
+    --dim:       #454b55;
+    --muted:     #8b929e;
+    --body:      #bcc2ce;
+    --heading:   #eef0f5;
+    --accent:    #61afef;
+    --accent-h:  #7cc4ff;
+    --accent-dim:#3d6d94;
+    --tag-bg:    rgba(97,175,239,0.08);
+    --tag-border: rgba(97,175,239,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    background: var(--bg);
+    color: var(--body);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgba(97,175,239,0.25);
+    color: var(--heading);
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    margin-bottom: 48px;
+  }
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Logo block — fixed height to prevent layout shift */
+  .logo-block {
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+
+  .logo-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--heading);
+    transition: color 0.25s;
+  }
+
+  .logo-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+    transition: color 0.25s;
+    height: 20px;
+    overflow: hidden;
+  }
+
+  nav {
+    display: flex;
+    gap: 24px;
+    flex-shrink: 0;
+  }
+
+  nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  nav a:hover { color: var(--heading); }
+
+  /* Star divider */
+  .stars {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent-dim);
+    letter-spacing: 3px;
+    margin-top: 18px;
+    overflow: hidden;
+    white-space: nowrap;
+    user-select: none;
+    opacity: 0.5;
+  }
+
+  /* ─── POSTS ─── */
+  .posts { margin-top: 32px; }
+
+  .post-item {
+    display: block;
+    padding: 24px 0;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-item + .post-item {
+    border-top: 1px solid var(--border);
+  }
+
+  .post-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--dim);
+    margin-bottom: 8px;
+  }
+
+  .post-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--heading);
+    line-height: 1.4;
+    transition: color 0.15s;
+  }
+
+  .post-item:hover .post-title { color: var(--accent); }
+
+  .post-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    color: var(--accent);
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-left: 10px;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+  }
+
+  .post-desc {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.75;
+  }
+
+  .read-more {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .post-item:hover .read-more { color: var(--accent-h); }
+  .read-more::after { content: ' →'; }
+
+  footer {
+    margin-top: 64px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--dim);
+    text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 32px 16px 60px; }
+    .header-row { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .post-title { font-size: 18px; }
+    .post-tag { display: block; margin-left: 0; margin-top: 6px; width: fit-content; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="header-row">
+      <a href="index.html" class="logo-block" id="logoBlock">
+        <div class="logo-name" id="logoName">Geb0_X</div>
+        <div class="logo-sub" id="logoSub">RE & Security blog</div>
+      </a>
+      <nav>
+        <a href="index.html">Blog</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+    <div class="stars" id="stars"></div>
+  </header>
+
+  <div class="posts">
+    <a class="post-item" href="post-1.html">
+      <div class="post-date">Apr 23, 2026</div>
+      <div class="post-title">
+        R-ImageDisk64.sys — Heap Overflow Leading to Kernel Stack Corruption
+      </div>
+      <div class="post-desc">
+        Heap-based buffer overflow via METHOD_NEITHER IOCTL. NonPagedPool corruption,
+        stack return address overwrite, potential LPE. Affects R-Studio / R-Drive Image.
+      </div>
+      <span class="read-more">Read more</span>
+    </a>
+  </div>
+
+  <footer>© 2026 Geb0_X</footer>
+
+</div>
+
+<script>
+// ── Config ──
+const nameText = 'Geb0_X';
+const subText  = 'RE & Security blog';
+const hexChars = '0123456789abcdef';
+
+const logoBlock = document.getElementById('logoBlock');
+const nameEl    = document.getElementById('logoName');
+const subEl     = document.getElementById('logoSub');
+
+function charToHex(c) {
+  return c.charCodeAt(0).toString(16).padStart(2, '0');
+}
+
+// Scramble: plain → hex (char by char, left to right)
+function encodeToHex(el, plain, speed) {
+  return new Promise(resolve => {
+    let current = plain.split('');
+    let i = 0;
+    function step() {
+      if (i >= current.length) { resolve(); return; }
+      if (current[i] === ' ') {
+        i++;
+        setTimeout(step, speed * 0.3);
+        return;
+      }
+      current[i] = charToHex(plain[i]);
+      el.textContent = current.join(' ').replace(/  /g, '  ');
+      i++;
+      setTimeout(step, speed);
+    }
+    step();
+  });
+}
+
+// Unscramble: hex → plain (char by char, left to right)
+function decodeToPlain(el, plain, speed) {
+  // Current state is hex-ish, rebuild from hex
+  let hexArr = plain.split('').map(c => c === ' ' ? ' ' : charToHex(c));
+  let current = [...hexArr];
+  let i = 0;
+
+  return new Promise(resolve => {
+    function step() {
+      if (i >= current.length) { 
+        el.textContent = plain;
+        resolve(); 
+        return; 
+      }
+      if (current[i] === ' ') {
+        i++;
+        setTimeout(step, speed * 0.3);
+        return;
+      }
+      current[i] = plain[i];
+      // Rebuild display
+      let display = '';
+      for (let j = 0; j < current.length; j++) {
+        display += current[j];
+      }
+      el.textContent = display;
+      i++;
+      setTimeout(step, speed);
+    }
+    step();
+  });
+}
+
+let isHovered = false;
+let animating = false;
+
+logoBlock.addEventListener('mouseenter', async () => {
+  isHovered = true;
+  if (animating) return;
+  animating = true;
+  
+  nameEl.style.color = 'var(--accent)';
+  subEl.style.color = 'var(--accent-dim)';
+  
+  await encodeToHex(nameEl, nameText, 55);
+  if (isHovered) await encodeToHex(subEl, subText, 25);
+  
+  animating = false;
+});
+
+logoBlock.addEventListener('mouseleave', async () => {
+  isHovered = false;
+  if (animating) return;
+  animating = true;
+  
+  await decodeToPlain(nameEl, nameText, 45);
+  nameEl.style.color = 'var(--heading)';
+  
+  await decodeToPlain(subEl, subText, 20);
+  subEl.style.color = 'var(--muted)';
+  
+  animating = false;
+});
+
+// ── Star divider ──
+const starsEl = document.getElementById('stars');
+function fillStars() {
+  const w = document.querySelector('.wrap').clientWidth;
+  const charW = 9.5;
+  starsEl.textContent = '*'.repeat(Math.floor(w / charW));
+}
+fillStars();
+window.addEventListener('resize', fillStars);
+</script>
+
+</body>
+</html>
