@@ -3,341 +3,176 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Geb0_X — RE & Security blog</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Geb0_X</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:        #21252b;
-    --border:    #353a44;
-    --dim:       #454b55;
-    --muted:     #8b929e;
-    --body:      #bcc2ce;
-    --heading:   #eef0f5;
-    --accent:    #61afef;
-    --accent-h:  #7cc4ff;
-    --accent-dim:#3d6d94;
-    --tag-bg:    rgba(97,175,239,0.08);
-    --tag-border: rgba(97,175,239,0.3);
-  }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html {
-    background: var(--bg);
-    color: var(--body);
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 16px;
-    line-height: 1.8;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  ::selection {
-    background: rgba(97,175,239,0.25);
-    color: var(--heading);
-  }
-
-  .wrap {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 48px 24px 80px;
-  }
-
-  /* ─── HEADER ─── */
-  header {
-    margin-bottom: 48px;
-  }
-
-  .header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  /* Logo block — fixed height to prevent layout shift */
-  .logo-block {
-    cursor: pointer;
-    text-decoration: none;
-    display: block;
-  }
-
-  .logo-name {
+  html, body {
+    background: #090a0c;
+    color: #7a8494;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--heading);
-    transition: color 0.25s;
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .page {
+    display: flex;
+    min-height: 100vh;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* CHAINS */
+  .chain {
+    width: 22px;
+    flex-shrink: 0;
+    color: #0a6a8a;
+    text-shadow: 0 0 8px rgba(0,200,255,0.4);
+    font-size: 12px;
+    line-height: 1.0;
+    user-select: none;
+    overflow: hidden;
+    white-space: pre;
+    font-family: 'JetBrains Mono', monospace;
+    align-self: stretch;
+  }
+
+  /* CENTER */
+  .center {
+    flex: 1;
+    padding: 0 28px 80px;
+    min-width: 0;
+  }
+
+/* LOGO */
+  .logo-wrap {
+    text-align: center;
+    padding: 16px 0 6px;
+    cursor: default;
+  }
+
+  .pixel-logo {
+    white-space: pre;
+    font-size: 11px;
+    line-height: 1.15;
+    color: #d44800;
+    text-shadow: 0 0 16px rgba(212,72,0,0.8), 0 0 32px rgba(212,72,0,0.3);
+    display: inline-block;
+    transition: all 0.5s ease;
+  }
+
+  .logo-wrap:hover .pixel-logo {
+    background: linear-gradient(to bottom, #1a8fff 50%, #ffe44d 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    filter: drop-shadow(0 0 10px rgba(26,143,255,0.8)) drop-shadow(0 0 20px rgba(255,228,77,0.6));
   }
 
   .logo-sub {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 2px;
-    transition: color 0.25s;
-    height: 20px;
-    overflow: hidden;
+    font-size: 10px;
+    color: #0a4a6a;
+    text-shadow: 0 0 6px rgba(0,180,255,0.3);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-top: 10px;
   }
 
   nav {
     display: flex;
+    justify-content: center;
     gap: 24px;
-    flex-shrink: 0;
-  }
-
-  nav a {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-
-  nav a:hover { color: var(--heading); }
-
-  /* Star divider */
-  .stars {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--accent-dim);
-    letter-spacing: 3px;
-    margin-top: 18px;
-    overflow: hidden;
-    white-space: nowrap;
-    user-select: none;
-    opacity: 0.5;
-  }
-
-  /* ─── POSTS ─── */
-  .posts { margin-top: 32px; }
-
-  .post-item {
-    display: block;
-    padding: 24px 0;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .post-item + .post-item {
-    border-top: 1px solid var(--border);
-  }
-
-  .post-date {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--dim);
-    margin-bottom: 8px;
-  }
-
-  .post-title {
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--heading);
-    line-height: 1.4;
-    transition: color 0.15s;
-  }
-
-  .post-item:hover .post-title { color: var(--accent); }
-
-  .post-tag {
-    display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    background: var(--tag-bg);
-    border: 1px solid var(--tag-border);
-    color: var(--accent);
-    padding: 2px 8px;
-    border-radius: 3px;
-    margin-left: 10px;
-    vertical-align: middle;
-    position: relative;
-    top: -2px;
-  }
-
-  .post-desc {
-    font-size: 15px;
-    font-weight: 300;
-    color: var(--muted);
-    margin-top: 8px;
-    line-height: 1.75;
-  }
-
-  .read-more {
-    display: inline-block;
     margin-top: 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--accent);
-    text-decoration: none;
-    transition: color 0.15s;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #111620;
   }
+  nav a { font-size: 12px; color: #3a4255; text-decoration: none; letter-spacing: 1px; transition: color 0.15s; }
+  nav a:hover { color: #d44800; }
 
-  .post-item:hover .read-more { color: var(--accent-h); }
-  .read-more::after { content: ' →'; }
 
-  footer {
-    margin-top: 64px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--dim);
-    text-align: center;
-  }
 
-  @media (max-width: 640px) {
-    .wrap { padding: 32px 16px 60px; }
-    .header-row { flex-direction: column; align-items: flex-start; gap: 16px; }
-    .post-title { font-size: 18px; }
-    .post-tag { display: block; margin-left: 0; margin-top: 6px; width: fit-content; }
-  }
+  .post { display: block; padding: 18px 0; border-bottom: 1px solid #0e1218; text-decoration: none; }
+  .post-date  { font-size: 10px; color: #252d3a; letter-spacing: 1px; margin-bottom: 6px; }
+  .post-title { font-size: 13px; color: #9aa4b4; line-height: 1.45; margin-bottom: 7px; transition: color 0.15s; }
+  .post:hover .post-title { color: #d44800; }
+  .post-desc  { font-size: 11px; color: #2e3648; line-height: 1.65; }
+
+  .foot { margin-top: 40px; font-size: 11px; color: #1e2530; display: flex; justify-content: space-between; }
+
+  .sparkle { position: fixed; bottom: 18px; right: 18px; font-size: 20px; color: #fff; opacity: 0.12; animation: sp 3s ease-in-out infinite; user-select: none; }
+  @keyframes sp { 0%,100%{opacity:0.08} 50%{opacity:0.22} }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header>
-    <div class="header-row">
-      <a href="index.html" class="logo-block" id="logoBlock">
-        <div class="logo-name" id="logoName">Geb0_X</div>
-        <div class="logo-sub" id="logoSub">RE & Security blog</div>
-      </a>
+<div class="page">
+
+  <!-- LEFT CHAIN -->
+  <div class="chain" id="chainL"></div>
+
+  <!-- CENTER -->
+  <div class="center">
+
+<!-- LOGO -->
+    <div class="logo-wrap">
+      <div class="pixel-logo"> ██████╗ ███████╗██████╗  ██████╗       ██╗  ██╗
+██╔════╝ ██╔════╝██╔══██╗██╔═████╗      ╚██╗██╔╝
+██║  ███╗█████╗  ██████╔╝██║██╔██║       ╚███╔╝ 
+██║   ██║██╔══╝  ██╔══██╗████╔╝██║       ██╔██╗ 
+╚██████╔╝███████╗██████╔╝╚██████╔╝      ██╔╝ ██╗
+ ╚═════╝ ╚══════╝╚═════╝  ╚═════╝       ╚═╝  ╚═╝</div>
+      <div class="logo-sub">security research</div>
       <nav>
-        <a href="index.html">Blog</a>
-        <a href="about.html">About</a>
+        <a href="index.html">posts</a>
+        <a href="about.html">about</a>
       </nav>
     </div>
-    <div class="stars" id="stars"></div>
-  </header>
 
-  <div class="posts">
-    <a class="post-item" href="post-1.html">
-      <div class="post-date">Apr 23, 2026</div>
-      <div class="post-title">
-        R-ImageDisk64.sys — Heap Overflow Leading to Kernel Stack Corruption
-      </div>
-      <div class="post-desc">
-        Heap-based buffer overflow via METHOD_NEITHER IOCTL. NonPagedPool corruption,
-        stack return address overwrite, potential LPE. Affects R-Studio / R-Drive Image.
-      </div>
-      <span class="read-more">Read more</span>
+    <!-- POSTS -->
+<div class="sec-div" id="secDiv"></div>
+
+    <a class="post" href="post-1.html">
+      <div class="post-date">2026-04-23</div>
+      <div class="post-title">R-ImageDisk64.sys — Heap Overflow Leading to Kernel Stack Corruption</div>
+      <div class="post-desc">Heap-based buffer overflow via METHOD_NEITHER IOCTL. NonPagedPool corruption, stack return address overwrite, potential LPE.</div>
     </a>
+
+    <div class="foot">
+      <span>© 2026 Geb0_X</span>
+      <span>kernel // RE // vuln research</span>
+    </div>
+
   </div>
 
-  <footer>© 2026 Geb0_X</footer>
+  <!-- RIGHT CHAIN -->
+  <div class="chain" id="chainR"></div>
 
 </div>
 
+<div class="sparkle">✦</div>
+
 <script>
-// ── Config ──
-const nameText = 'Geb0_X';
-const subText  = 'RE & Security blog';
-const hexChars = '0123456789abcdef';
-
-const logoBlock = document.getElementById('logoBlock');
-const nameEl    = document.getElementById('logoName');
-const subEl     = document.getElementById('logoSub');
-
-function charToHex(c) {
-  return c.charCodeAt(0).toString(16).padStart(2, '0');
+// ── CHAINS ──
+function buildChain(el) {
+  const h = window.innerHeight + 200;
+  const rows = Math.ceil(h / 56) + 4;
+  let s = '';
+  for (let i = 0; i < rows; i++) {
+    s += (i % 2 === 0)
+      ? '\u2554\u2550\u2557\n\u2551 \u2551\n\u255a\u2566\u255d\n \u2551 \n'
+      : '\u2554\u2569\u2557\n\u2551 \u2551\n\u255a\u2566\u255d\n \u2551 \n';
+  }
+  el.textContent = s;
 }
 
-// Scramble: plain → hex (char by char, left to right)
-function encodeToHex(el, plain, speed) {
-  return new Promise(resolve => {
-    let current = plain.split('');
-    let i = 0;
-    function step() {
-      if (i >= current.length) { resolve(); return; }
-      if (current[i] === ' ') {
-        i++;
-        setTimeout(step, speed * 0.3);
-        return;
-      }
-      current[i] = charToHex(plain[i]);
-      el.textContent = current.join(' ').replace(/  /g, '  ');
-      i++;
-      setTimeout(step, speed);
-    }
-    step();
-  });
+function init() {
+  buildChain(document.getElementById('chainL'));
+  buildChain(document.getElementById('chainR'));
 }
-
-// Unscramble: hex → plain (char by char, left to right)
-function decodeToPlain(el, plain, speed) {
-  // Current state is hex-ish, rebuild from hex
-  let hexArr = plain.split('').map(c => c === ' ' ? ' ' : charToHex(c));
-  let current = [...hexArr];
-  let i = 0;
-
-  return new Promise(resolve => {
-    function step() {
-      if (i >= current.length) { 
-        el.textContent = plain;
-        resolve(); 
-        return; 
-      }
-      if (current[i] === ' ') {
-        i++;
-        setTimeout(step, speed * 0.3);
-        return;
-      }
-      current[i] = plain[i];
-      // Rebuild display
-      let display = '';
-      for (let j = 0; j < current.length; j++) {
-        display += current[j];
-      }
-      el.textContent = display;
-      i++;
-      setTimeout(step, speed);
-    }
-    step();
-  });
-}
-
-let isHovered = false;
-let animating = false;
-
-logoBlock.addEventListener('mouseenter', async () => {
-  isHovered = true;
-  if (animating) return;
-  animating = true;
-  
-  nameEl.style.color = 'var(--accent)';
-  subEl.style.color = 'var(--accent-dim)';
-  
-  await encodeToHex(nameEl, nameText, 55);
-  if (isHovered) await encodeToHex(subEl, subText, 25);
-  
-  animating = false;
-});
-
-logoBlock.addEventListener('mouseleave', async () => {
-  isHovered = false;
-  if (animating) return;
-  animating = true;
-  
-  await decodeToPlain(nameEl, nameText, 45);
-  nameEl.style.color = 'var(--heading)';
-  
-  await decodeToPlain(subEl, subText, 20);
-  subEl.style.color = 'var(--muted)';
-  
-  animating = false;
-});
-
-// ── Star divider ──
-const starsEl = document.getElementById('stars');
-function fillStars() {
-  const w = document.querySelector('.wrap').clientWidth;
-  const charW = 9.5;
-  starsEl.textContent = '*'.repeat(Math.floor(w / charW));
-}
-fillStars();
-window.addEventListener('resize', fillStars);
+init();
+window.addEventListener('resize', init);
 </script>
-
 </body>
 </html>
