@@ -234,7 +234,7 @@
     <tr><td>Version</td>       <td>00.00.0018 (compiled 2014-10-10)</td></tr>
     <tr><td>Vendor</td>        <td>R-TT Inc. — <a href="mailto:office@r-tt.com">office@r-tt.com</a></td></tr>
     <tr><td>Platforms</td>     <td>Windows 10 (all builds), Windows 11 &lt; 22H2</td></tr>
-    <tr><td>Impact</td>        <td><span class="warn">DoS confirmed — kernel memory corruption, RIP control demonstrated</span></td></tr>
+    <tr><td>Impact</td>        <td><span class="warn">DoS confirmed — kernel memory corruption</span></td></tr>
     <tr><td>CVSS 3.1</td>      <td><span class="acc">7.8</span> — AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H</td></tr>
     <tr><td>Disclosed</td>     <td>2026-04-23</td></tr>
   </table>
@@ -472,7 +472,7 @@ overflow   = <span class="err">0xFFFE bytes past the end of the allocated block<
   <!-- SCREENSHOT: PoC output -->
   <div class="shot">
     <img src="img/poc-output.png" alt="PoC output in CMD">
-    <div class="cap">Fig. 5 — PoC output: ok=1 confirms UserBuffer read without ProbeForRead</div>
+    <div class="cap">Fig. 5 — PoC output: buffer prepared, IOCTL dispatched — system crashed immediately after</div>
   </div>
 
   <p>Running the PoC produced the following BugCheck:</p>
